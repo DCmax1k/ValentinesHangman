@@ -1,0 +1,323 @@
+.Hangman {
+    height: 100vh;
+    width: 100vw;
+
+}
+.header {
+    width: 100%;
+    text-align: center;
+    font-size: 3vh;
+    color: #595959;
+
+}
+
+.hanger {
+    position: absolute;
+    top: 1vh;
+    right: 1vh;
+    height: 50vh; /* Size of hangman illistration */
+}
+.hanger > .frame {
+    height: 100%;
+}
+.hanger > .wholeBody {
+    position: absolute;
+    top: 10%;
+    left: -43%;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+.hanger > .wholeBody > img {
+    max-height: 50vh;
+    position: absolute;
+}
+.hanger > .messageBox {
+    position: absolute;
+    top: 15%;
+    left: -120%;
+    width: 25vh;
+    height: fit-content;
+}
+.hanger > .messageBox.hidden {
+    display: none;
+}
+.hanger > .messageBox > img {
+    width: 100%;
+    z-index: 1;
+    position: absolute;
+}
+.hanger > .messageBox > p {
+    z-index: 2;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    font-size: 3vh;
+    padding: 2%;
+    color: #B4B4B4;
+}
+.hanger > .deadEyes {
+    position: absolute;
+    top: 22%;
+    left: -11%;
+    height: 8%;
+    z-index: 2;
+    display: none;
+}
+.hanger > .deadEyes.show {
+    display: block;
+}
+
+.phrase {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 2vh;
+    margin-left: 5vh;
+    margin-top: 0vh;
+    width: 60vw;
+    height: 50vh;
+    overflow-y: auto;
+}
+
+.phrase > .word {
+    display: flex;
+    margin: 0 2vh;
+    pointer-events: none;
+    user-select: none;
+    height: 12vh;
+}
+.phrase > .word > .letter {
+    margin: 0 0.5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 8vh;
+    min-width: 8vh;
+}
+.phrase > .word > .letter > .underscore {
+    height: 1vh;
+    width: 100%;
+    background-color: #7AA4FF;
+}
+.phrase > .word > .letter {
+    color: #7AA4FF;
+}
+.phrase > .word > .letter.hidden {
+    color: transparent;
+}
+.phrase > .word > .letter.hidden > .underscore {
+    background-color: #FFF3C1;
+}
+
+.guessCont {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+    height: 10vh;
+    position: relative
+}
+
+.guessCont > .guess {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 20vh;
+    height: 100%;
+    font-size: 4vh;
+    color: #595959;
+}
+.guessCont > .guess > input {
+    width: 100%;
+    height: 50%;
+    outline: none;
+    border: none;
+    background-color: #3A3A3A;
+    color: white;
+    border-radius: 1.5vh;
+    font-size: 3vh;
+    padding: 0 2vh;
+}
+.guessCont > .submit {
+    width: 10vh;
+    height: 100%;
+}
+.guessCont > .submit > button {
+    height: 100%;
+    width: 100%;
+    border-radius: 2vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #298DFF;
+    cursor: pointer;
+    border: none;
+}
+.guessCont > .submit > button > img {
+    height: 80%;
+}
+.actionButton {
+    color: white;
+    font-size: 2vh;
+    display: flex;
+    height: 5vh;
+    width: 15vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #298DFF;
+    border-radius: 1vh;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.actionButton.exit {
+    right: 80vw;
+}
+.actionButton.next {
+    left: 80vw;
+    height: 7vh;
+    background-color: grey;
+}
+.actionButton.next.animateNext {
+    animation: animateNext 0.8s infinite linear;
+}
+.actionButton.next.animateRetry {
+    animation: animateRetry 0.8s infinite linear;
+}
+@keyframes animateNext {
+    0% {
+        background-color: #298DFF;
+    }
+    50% {
+        background-color: #9ccaff;
+    }
+    100% {
+        background-color: #298DFF;
+    }
+}
+@keyframes animateRetry {
+    0% {
+        background-color: grey;
+    }
+    50% {
+        background-color: #FFB5B5;
+    }
+    100% {
+        background-color: grey;
+    }
+}
+
+.guesses {
+    font-size: 3vh;
+    color: #595959;
+    margin: 2vh;
+}
+.guesses > .letters {
+    display: flex;
+    gap: 1vh;
+    margin-top: 1vh;
+}
+.guesses > .letters > .letter {
+    font-size: 5vh;
+    padding: 2vh;
+    border-radius: 1vh;
+    background-color: #FFB5B5;
+    color: white;
+}
+
+@media screen and (max-width: 1200px) {
+    .phrase {
+        margin-left: 1vh;
+    }
+    .phrase > .word {
+        height: 8vh;
+    }
+    .phrase > .word > .letter {
+        font-size: 5vh;
+        min-width: 5vh;
+    }
+    .phrase > .word > .letter > .underscore {
+        height: 0.5vh;
+    }
+    .hanger {
+        height: 30vh;
+    }
+    .hanger > .messageBox {
+        top: 5%;
+        left: -190%;
+        width: 25vh;
+        height: fit-content;
+    }
+}
+@media screen and (max-width: 1000px) {
+    .hanger {
+        top: 5vh;
+    }
+    .hanger > .messageBox {
+        top: 8%;
+        left: -150%;
+        width: 20vh;
+        height: fit-content;
+    }
+    .hanger > .messageBox > p {
+        font-size: 2.5vh;
+    }
+    .phrase {
+        justify-content: center;
+        margin-left: 0vh;
+        margin-top: 35vh;
+        padding: 0 1vh;
+        width: 100vw;
+        height: 25vh;
+        overflow-y: auto;
+        gap: 0;
+    }
+    .phrase > .word {
+        height: 5vh;
+    }
+    .phrase > .word > .letter {
+        font-size: 3vh;
+        min-width: 3vh;
+    }
+    .phrase > .word > .letter > .underscore {
+        height: 0.3vh;
+    }
+    .guesses > .letters > .letter {
+        font-size: 3vh;
+    }
+
+    .guessCont {
+        height: 5vh;
+        margin-bottom: 7vh;
+    }
+    .guessCont > .guess {
+        flex-direction: row;
+        width: 30vh;
+    }
+    .guessCont > .submit > button > img {
+        height: 3vh;
+    }
+    .guessCont > .guess > input {
+        width: 70%;
+        height: 100%;
+        margin-left: 2vh;
+    }
+    .actionButton.next {
+        height: 5vh;
+        right: 2vh;
+        left: unset;
+    }
+    .actionButton.exit {
+        left: 2vh;
+        right: unset;
+    }
+    .actionButton {
+        top: 110%;
+        transform: translateY(0);
+    }
+}
