@@ -126,26 +126,6 @@ class Dashboard extends Component {
         }, 3000);
     }
 
-    async logout() {
-        try {
-            const response = await sendData('/login/logout', {});
-            if (response.status === 'success') {
-                window.location.href = '/';
-            } else {
-                this.customAlert('Error connecting to server. Redirecting...', false);
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 1500);
-            }
-        } catch(err) {
-            console.error(err);
-            this.customAlert('Error connecting to server. Redirecting...', false);
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1500);
-        }
-    }
-
     render() {
 
         return this.state.loggedIn ? (

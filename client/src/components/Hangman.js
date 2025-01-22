@@ -65,6 +65,8 @@ class Hangman extends Component {
             gameLost: false,
 
             hangmanMessage: "",
+
+            allImagesLoaded: false,
         }
         this.setRound = this.setRound.bind(this);
         this.inputLetter = this.inputLetter.bind(this);
@@ -74,10 +76,51 @@ class Hangman extends Component {
         this.nextRound = this.nextRound.bind(this);
         this.exitGame = this.exitGame.bind(this);
         this.setHangmanMessage = this.setHangmanMessage.bind(this);
+        this.loadImages = this.loadImages.bind(this);
     }
 
     componentDidMount() {
         this.setRound(1);
+
+        const imageUrls = [
+            '/images/hangman/head.png',
+            '/images/hangman/torso.png',
+            '/images/hangman/leftArm.png',
+            '/images/hangman/rightArm.png',
+            '/images/hangman/leftLeg.png',
+            '/images/hangman/rightLeg.png',
+            '/images/hangman/deadEyes.svg',
+            '/images/hangman/hanger.svg',
+            '/images/hangman/deadEyes.svg',
+        ];
+        this.loadImages(imageUrls);
+    }
+
+    loadImages(imageUrls) {
+        setTimeout(() => {
+            this.setState({ initialLoad: true });
+        }, 100);
+        // Array of image URLs to preload
+
+        // Preload images
+        const imagePromises = imageUrls.map((url) => {
+            return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = url;
+            img.onload = resolve;
+            img.onerror = reject;
+            });
+        });
+
+        // Wait for all images to load
+        Promise.all(imagePromises)
+            .then(() => {
+            this.setState({ allImagesLoaded: true }); // Update state when done
+            
+            })
+            .catch((error) => {
+            console.error("Error loading images:", error);
+            });
     }
 
     setRound(round) {
@@ -188,7 +231,11 @@ class Hangman extends Component {
         const wrongGuesses = this.state.wrongGuesses;
         const nextButtonText = this.state.gameLost ? 'Retry' : this.state.gameWon ? 'Next' : 'Skip';
         return (
-            <div className='Hangman'>
+            <div className={`Hangman ${this.state.allImagesLoaded ? 'Loaded' : ''}`}>
+                <div className={`loadingBar ${this.state.initialLoad ? 'initial':''} ${this.state.allImagesLoaded ? 'Loaded' : ''}`}>
+                    <div className='loadingBarFill'></div>
+                </div>
+
                 <h1 className='header'>Round {this.state.round} of {rounds.length}</h1>
 
                 <div className='phrase'>
