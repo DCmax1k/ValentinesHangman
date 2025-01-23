@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 
 const chanceOfMessage = 0.9;
+// const rounds = [{
+//     round: 1,
+//     phrase: "I LOVE YOU",
+// },
+// {
+//     round: 2,
+//     phrase: "YOU ARE MY DAYLIGHT",
+// },];
 const rounds = [
     {
         round: 1,
@@ -64,10 +72,22 @@ class Hangman extends Component {
             gameWon: false,
             gameLost: false,
 
+            showEndScreen: false,
+            roundsData: {
+                startTime: 0,
+                endTime: 0,
+                deaths: 0,
+                totalGuesses: 0,
+                incorrectGuessesPerRound: [],
+                roundsWon: 0,
+            },
+
             hangmanMessage: "",
 
             allImagesLoaded: false,
         }
+        this.inputRef = React.createRef();
+
         this.setRound = this.setRound.bind(this);
         this.inputLetter = this.inputLetter.bind(this);
         this.submitLetter = this.submitLetter.bind(this);
@@ -77,10 +97,29 @@ class Hangman extends Component {
         this.exitGame = this.exitGame.bind(this);
         this.setHangmanMessage = this.setHangmanMessage.bind(this);
         this.loadImages = this.loadImages.bind(this);
+        this.showEndScreen = this.showEndScreen.bind(this);
+        this.startGameOver = this.startGameOver.bind(this);
+
+        this.roundsData = {
+            startTime: 0,
+            endTime: 0,
+            deaths: 0,
+            totalGuesses: 0,
+            incorrectGuessesPerRound: [],
+            roundsWon: 0,
+        };
     }
 
     componentDidMount() {
+        window.addEventListener('keydown', this.handleKeyDownGuess);
+
         this.setRound(1);
+        
+        this.roundsData.startTime = Date.now();
+        rounds.forEach(() => {
+            this.roundsData.incorrectGuessesPerRound.push(0);
+        });
+
 
         const imageUrls = [
             '/images/hangman/head.png',
@@ -94,6 +133,9 @@ class Hangman extends Component {
             '/images/hangman/deadEyes.svg',
         ];
         this.loadImages(imageUrls);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.handleKeyDownGuess);
     }
 
     loadImages(imageUrls) {
@@ -131,6 +173,9 @@ class Hangman extends Component {
 
         // Reset the game
         this.setState({round, phrase, phraseEncoded, uniqueLetters, correctGuesses: [], wrongGuesses: [], livesUsed: 0, gameWon: false, gameLost: false, inputLetter: "", hangmanMessage: ""});
+        setTimeout(() => {
+            this.inputRef.current.focus();
+        }, 100); 
     }
 
     inputLetter(e) {
@@ -145,14 +190,26 @@ class Hangman extends Component {
     handleKeyDownGuess(e) {
         if (e.key === 'Enter') {
             this.submitLetter();
+        } else {
+            const letter = e.key;
+            const setLetter = letter ? letter.toUpperCase() : "";
+            const validLettersUppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (!validLettersUppercase.includes(setLetter)) return;
+            this.setState({inputLetter: setLetter});
+            this.inputRef.current.focus();
         }
+        
     }
 
     submitLetter() {
         if (this.state.gameWon || this.state.gameLost) return;
         const letter = this.state.inputLetter;
         if (!letter) return;
-        if (this.state.correctGuesses.includes(letter) || this.state.wrongGuesses.includes(letter)) return;
+        this.setState({inputLetter: ""});
+        if (this.state.correctGuesses.includes(letter) || this.state.wrongGuesses.includes(letter)) {
+            this.props.customAlert('You already guessed the letter "' + letter + '"', true);
+            return;
+        };
         if (this.state.uniqueLetters.includes(letter)) {
             // Correct guess
             this.setHangmanMessage(true);
@@ -164,21 +221,25 @@ class Hangman extends Component {
             });
             if (newUniqueLetters.length === 0) {
                 this.setState({gameWon: true});
+                this.roundsData.roundsWon++;
+                this.props.customAlert('You won this round! Click next to continue.', true);
             }
         } else {
             // Incorrect guess
             this.setHangmanMessage();
             const newWrongGuesses = [...this.state.wrongGuesses, letter];
             const livesUsed = this.state.livesUsed + 1;
+            this.roundsData.incorrectGuessesPerRound[this.state.round - 1]++;
             this.setState({
                 wrongGuesses: newWrongGuesses,
                 livesUsed,
             });
             if (livesUsed === 6) {
+                this.roundsData.deaths++;
                 this.setState({gameLost: true});
+                this.props.customAlert('You killed Dylan, retry!', false);
             }
         }
-        this.setState({inputLetter: ""});
     }
 
     setHangmanMessage(removeMessage = false) {
@@ -223,13 +284,44 @@ class Hangman extends Component {
         }
         
         if (round + 1 > rounds.length) {
-            this.exitGame();
+            this.showEndScreen();
         }
+    }
+    showEndScreen() {
+        const startTime = this.roundsData.startTime;
+        const endTime = Date.now();
+        const totalGuesses = this.roundsData.totalGuesses;
+        const incorrectGuessesPerRound = this.roundsData.incorrectGuessesPerRound;
+        const deaths = this.roundsData.deaths;
+        const roundsWon = this.roundsData.roundsWon;
+        this.setState({
+            showEndScreen: true,
+            roundsData: {startTime, endTime, totalGuesses, deaths, incorrectGuessesPerRound, roundsWon},
+        });
+    }
+
+    startGameOver() {
+        this.setRound(1);
+        this.roundsData = {
+            startTime: 0,
+            endTime: 0,
+            deaths: 0,
+            totalGuesses: 0,
+            incorrectGuessesPerRound: [],
+            roundsWon: 0,
+        };
+        this.setState({showEndScreen: false });
     }
 
     render() {
         const wrongGuesses = this.state.wrongGuesses;
         const nextButtonText = this.state.gameLost ? 'Retry' : this.state.gameWon ? 'Next' : 'Skip';
+
+        const completeTimeSeconds = Math.floor((this.state.roundsData.endTime - this.state.roundsData.startTime) / 1000);
+        const minutes = Math.floor(completeTimeSeconds / 60);
+        const seconds = completeTimeSeconds % 60;
+        const mostStruggledRoundIndex = this.state.roundsData.incorrectGuessesPerRound.indexOf(Math.max(...this.state.roundsData.incorrectGuessesPerRound));
+        const mostStruggledPhrase = rounds[mostStruggledRoundIndex] ? rounds[mostStruggledRoundIndex].phrase : "";
         return (
             <div className={`Hangman ${this.state.allImagesLoaded ? 'Loaded' : ''}`}>
                 <div className={`loadingBar ${this.state.initialLoad ? 'initial':''} ${this.state.allImagesLoaded ? 'Loaded' : ''}`}>
@@ -282,7 +374,7 @@ class Hangman extends Component {
 
                     <div className='guess'>
                         <p>Guess</p>
-                        <input type='text' onInput={this.inputLetter} value={this.state.inputLetter} onKeyDown={this.handleKeyDownGuess} />
+                        <input type='text' ref={this.inputRef} onInput={this.inputLetter} value={this.state.inputLetter} /* onKeyDown={this.handleKeyDownGuess} */ />
                     </div>
                     <div className='submit'>
                         <button onClick={this.submitLetter}>
@@ -302,6 +394,35 @@ class Hangman extends Component {
                             )
                         })}
                     </div>
+                </div>
+
+                {/* End Screen */}
+                <div className={`endScreen ${this.state.showEndScreen ? 'show':''}`}>
+                        <p style={{display: this.state.roundsData.roundsWon === rounds.length ? "block" : "none"}}>
+                            Completed in {minutes > 0 ? (minutes + " minute" + (minutes===1?"":"s") + " ") : ""} {seconds} second{seconds === 1 ? "" : "s"}.
+                            <br />
+                            <br />
+                            You killed Dylan {this.state.roundsData.deaths} time{this.state.roundsData.deaths === 1 ? "" : "s"}.
+                            <br />
+                            <br />
+                            You struggled the most with guessing the phrase:
+                            <br />
+                            <span className='mostStruggledPhrase'>{mostStruggledPhrase}</span>
+                            <br />
+                            <div className='endScreenButtons'>
+                                <button className='blueButton' onClick={this.startGameOver} >Play Again</button>
+                                <button className='blueButton' onClick={() => {window.location.href = '/'}} >Exit</button>
+                            </div>
+                        </p>
+                        <p style={{display: this.state.roundsData.roundsWon === rounds.length ? "none" : "block"}}>
+                            Usually, you would see the end screen here, but you don't get one for skipping rounds!
+                            <br />
+                            <span className='mostStruggledPhrase'>{mostStruggledPhrase}</span>
+                            <div className='endScreenButtons'>
+                                <button className='redButton' onClick={this.startGameOver} >Start over</button>
+                            </div>
+                            
+                        </p>
                 </div>
 
             </div>

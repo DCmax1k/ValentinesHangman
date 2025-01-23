@@ -22,8 +22,8 @@
     pointer-events: none;
 }
 .alerts > .alert {
-    background-color: #286243;
-    color: #88E8B4;
+    background-color: #298DFF;
+    color: white;
     border-radius: 10000vh;
     height: fit-content;
     min-height: 5vh;

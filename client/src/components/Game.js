@@ -17,6 +17,10 @@ class Game extends Component {
         this.startGame = this.startGame.bind(this);
         this.showHint = this.showHint.bind(this);
         this.handleKeyDownPassword = this.handleKeyDownPassword.bind(this);
+        this.customAlert = this.customAlert.bind(this);
+        this.closeAlert = this.closeAlert.bind(this);
+        this.applyDecay = this.applyDecay.bind(this);
+
     }
 
     inputPass(e) {
@@ -102,7 +106,7 @@ class Game extends Component {
                         // Auto close alert after 10 seconds
                         return (
                         <div className={`alert ${alert.status} ${alert.animate ? 'animate' : ''}`} key={alert.id}>
-                            <img onClick={() => this.closeAlert(alert)} src={alert.status ? '/images/icons/greenHollowCheck.svg' : '/images/icons/redHollowX.svg'} alt='Close notification' />
+                            <img onClick={() => this.closeAlert(alert)} src={alert.status ? '/images/icons/hollowHeart.svg' : '/images/icons/redHollowX.svg'} alt='Close notification' />
                             {alert.txt}
                         </div>
                         )
@@ -146,7 +150,7 @@ class Game extends Component {
                     </div>
 
                 ) : this.state.screen === 'hangman' ? (
-                    <Hangman />
+                    <Hangman customAlert={this.customAlert} />
                 ) : null}
 
 

@@ -195,6 +195,43 @@
 .actionButton.next.animateRetry {
     animation: animateRetry 0.8s infinite linear;
 }
+
+/* End Screen */
+.endScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20vh;
+    height: 100vh;
+    width: 100vw;
+    background-color: #CCB7B4;
+    color: black;
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.5s ease;
+    z-index: 1;
+}
+.endScreen.show {
+    transform: scale(1);
+    opacity: 1;
+}
+.endScreen > p {
+    text-align: center;
+    font-size: 3vh;
+}
+.endScreen > p > .mostStruggledPhrase {
+    color: #B61313;
+}
+.endScreenButtons {
+    display: flex;
+    justify-content: center;
+    gap: 2vh;
+    margin-top: 5vh;
+}
+
 @keyframes animateNext {
     0% {
         background-color: #298DFF;
