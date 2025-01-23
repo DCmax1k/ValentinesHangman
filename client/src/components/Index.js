@@ -14,6 +14,10 @@ class Index extends Component {
     }
 
     componentDidMount() {
+        // if domain includes digitalcaldwell, and not https, redirect to https
+        if (window.location.href.includes('digitalcaldwell') && window.location.protocol !== 'https:') {
+            window.location.href = window.location.href.replace('http:', 'https:');
+        }
         const imageUrls = [
             '/images/indexDecor.png',
             '/images/heart.png',

@@ -421,7 +421,6 @@ class Hangman extends Component {
                         <p style={{display: this.state.roundsData.roundsWon === rounds.length ? "none" : "block"}}>
                             Usually, you would see the end screen here, but you don't get one for skipping rounds!
                             <br />
-                            <span className='mostStruggledPhrase'>{mostStruggledPhrase}</span>
                             <div className='endScreenButtons'>
                                 <button className='redButton' onClick={this.startGameOver} >Start over</button>
                             </div>
