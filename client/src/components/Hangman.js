@@ -302,12 +302,16 @@ class Hangman extends Component {
 
     startGameOver() {
         this.setRound(1);
+        const incorrectGuessesPerRound = [];
+        rounds.forEach(() => {
+            incorrectGuessesPerRound.push(0);
+        });
         this.roundsData = {
-            startTime: 0,
+            startTime: Date.now(),
             endTime: 0,
             deaths: 0,
             totalGuesses: 0,
-            incorrectGuessesPerRound: [],
+            incorrectGuessesPerRound,
             roundsWon: 0,
         };
         this.setState({showEndScreen: false });
