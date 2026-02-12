@@ -12,43 +12,43 @@ const chanceOfMessage = 0.9;
 const rounds = [
     {
         round: 1,
-        phrase: "I LOVE YOU",
+        phrase: "CAN WE MAKE SOME ICE CREAM", //"I LOVE YOU",
     },
     {
         round: 2,
-        phrase: "YOU ARE MY DAYLIGHT",
+        phrase: "YOUR STUCK WITH ME", //"YOU ARE MY DAYLIGHT",
     },
     {
         round: 3,
-        phrase: "YOU ARE MY DREAM COME TRUE",
+        phrase: "NEW GYM PARTNERS", //"YOU ARE MY DREAM COME TRUE",
     },
     {
         round: 4,
-        phrase: "BEST FIVE MONTHS EVER",
+        phrase: "SLIM BADDIE", //"BEST FIVE MONTHS EVER",
     },
     {
         round: 5,
-        phrase: "CANES ON ME ANYTIME",
+        phrase: "LOVE SHOWERING TOGETHER", //"CANES ON ME ANYTIME",
     },
     {
         round: 6,
-        phrase: "PROVIDE THE BEST FOR THE BEST",
+        phrase: "LETS GIVE EACH OTHER HEAD", //"PROVIDE THE BEST FOR THE BEST",
     },
     {
         round: 7,
-        phrase: "POPCORN AND MOVIE NIGHT",
+        phrase: "STEAL ALL MY HOODIES", //"POPCORN AND MOVIE NIGHT",
     },
     {
         round: 8,
-        phrase: "FACE ME IN THE DAILY WORDLE",
+        phrase: "CAN NOT KEEP MY HANDS OFF OF YOU", //"FACE ME IN THE DAILY WORDLE",
     },
     {
         round: 9,
-        phrase: "FORTNITE GOD",
+        phrase: "YELL AT OUR UPSTAIRS NEIGHBORS TO SHUT THE FUCK UP", //"FORTNITE GOD",
     },
     {
         round: 10,
-        phrase: "DEEP IN LOVE UNTIL WE ARE OLD",
+        phrase: "SNUGGLES AND INSTAGRAM REELS TIME", //"DEEP IN LOVE UNTIL WE ARE OLD",
     },
 
 ];
@@ -279,7 +279,8 @@ class Hangman extends Component {
         } else if (this.state.gameWon) {
             this.setRound(round + 1);
         } else {
-            this.setRound(round + 1);
+            // skip disabled
+            // this.setRound(round + 1);
             console.log(this.state.round);
         }
         
@@ -319,7 +320,7 @@ class Hangman extends Component {
 
     render() {
         const wrongGuesses = this.state.wrongGuesses;
-        const nextButtonText = this.state.gameLost ? 'Retry' : this.state.gameWon ? 'Next' : 'Skip';
+        const nextButtonText = this.state.gameLost ? 'Retry round' : this.state.gameWon ? 'Next' : ''; // disabled skip, last string there
 
         const completeTimeSeconds = Math.floor((this.state.roundsData.endTime - this.state.roundsData.startTime) / 1000);
         const minutes = Math.floor(completeTimeSeconds / 60);
@@ -374,7 +375,7 @@ class Hangman extends Component {
 
                 <div className='guessCont'>
                     <button className={`exit actionButton`} onClick={this.goBack}>Go back</button>
-                    <button className={`next actionButton ${this.state.gameWon ? 'animateNext':''} ${this.state.gameLost ? 'animateRetry':''}`} onClick={this.nextRound}>{nextButtonText}</button>
+                    {nextButtonText && <button className={`next actionButton ${this.state.gameWon ? 'animateNext':''} ${this.state.gameLost ? 'animateRetry':''}`} onClick={this.nextRound}>{nextButtonText}</button>}
 
                     <div className='guess'>
                         <p>Guess</p>
@@ -418,6 +419,7 @@ class Hangman extends Component {
                                 <button className='blueButton' onClick={() => {window.location.href = '/'}} >Exit</button>
                             </div>
                         </p>
+                        {/* Skipping is disabled so this screen should never show */}
                         <p style={{display: this.state.roundsData.roundsWon === rounds.length ? "none" : "block"}}>
                             Usually, you would see the end screen here, but you don't get one for skipping rounds!
                             <br />

@@ -20,6 +20,9 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/client/build/index.html');
 });
+app.get('/game', (req, res) => {
+    res.sendFile(__dirname + '/client/build/index.html');
+});
 app.get('/dashboard', (req, res) => {
     res.sendFile(__dirname + '/client/build/index.html');
 });

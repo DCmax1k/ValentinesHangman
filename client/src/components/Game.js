@@ -29,7 +29,8 @@ class Game extends Component {
     checkPass() {
         const convertedPass = this.state.pass.toLowerCase();
         const pass = convertedPass.replace(/\s/g, '');
-        if (pass === 'iloveyou') {
+        // if (pass === 'iloveyou') {
+        if (pass === 'iloveyoumore') {
             this.setState({screen: 'pregame'});
         } else {
             this.customAlert('Try again', false);
@@ -40,7 +41,8 @@ class Game extends Component {
     }
 
     showHint() {
-        this.customAlert('Hint: Something you love to tell to me', true);
+        // this.customAlert('Hint: Something you love to tell to me', true);
+        this.customAlert('Hint: Response', true);
     }
     goBack() {
         window.location.href = '/';
@@ -139,7 +141,8 @@ class Game extends Component {
                     <div className='pregameScreen'>
                         <img src='/images/heart.png' alt='heart' style={{height: '10vh'}} />
 
-                        <p className='bigText'>I love you more.</p>
+                        {/* <p className='bigText'>I love you more.</p> */}
+                        <p className='bigText'>No you don't.</p>
 
                         <p className='bigText'>Now, lets get started!</p>
 
